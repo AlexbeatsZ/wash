@@ -4,9 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -19,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.Badge
@@ -26,15 +24,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -44,16 +39,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.srap.wash.logic.model.LatestUsedResponse
+import com.srap.wash.ui.component.SettingsTopBar
 import com.srap.wash.utils.TimeUtil
 import com.srap.wash.utils.ToastUtil
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun WashListItem(navController: NavController, data: LatestUsedResponse.Data, messageData: TimeData?) {
     val context = LocalContext.current
@@ -73,7 +68,12 @@ fun WashListItem(navController: NavController, data: LatestUsedResponse.Data, me
     // 注册广播接收器
     DisposableEffect(messageData) {
         val filter = IntentFilter("com.srap.wash.UPDATE_TIME")
-        context.registerReceiver(timeReceiver, filter, Context.RECEIVER_EXPORTED)
+        ContextCompat.registerReceiver(
+            context,
+            timeReceiver,
+            filter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
 
         // 取消注册广播接收器
         onDispose {
@@ -89,8 +89,9 @@ fun WashListItem(navController: NavController, data: LatestUsedResponse.Data, me
     }
 
     ElevatedCard(
+        shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
+            defaultElevation = 0.dp
         ),
         onClick = {
             if (data.workStatus == 10) {
@@ -100,10 +101,10 @@ fun WashListItem(navController: NavController, data: LatestUsedResponse.Data, me
             }
         },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 2.dp),
     ) {
         Column {
             Row(
@@ -114,14 +115,15 @@ fun WashListItem(navController: NavController, data: LatestUsedResponse.Data, me
                 horizontalArrangement = Arrangement.SpaceBetween // 左右分隔
             ) {
                 // 左边的两行文字
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = data.goodsName,
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
                         text = data.orgName,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -132,7 +134,11 @@ fun WashListItem(navController: NavController, data: LatestUsedResponse.Data, me
                     horizontalAlignment = Alignment.CenterHorizontally // 水平居中
                 ) {
                     Badge(
-                        containerColor = if (data.workStatus == 10) Color.Green else Color.Red
+                        containerColor = if (data.workStatus == 10) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.tertiary
+                        }
                     )
                     Text(
                         text = if (messageData?.timeStamp != null) TimeUtil.getDateTime(residualTime) else if (data.workStatus == 10) "空闲" else "忙碌",
@@ -146,7 +152,7 @@ fun WashListItem(navController: NavController, data: LatestUsedResponse.Data, me
                     progress = { residualTime.toFloat() / messageData.allTimeStamp.toFloat() },
                     modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colorScheme.primary,
-                    trackColor = Color.Gray.copy(alpha = 0.3f),
+                    trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                 )
             }
         }
@@ -157,6 +163,14 @@ fun WashListItem(navController: NavController, data: LatestUsedResponse.Data, me
 @Composable
 fun WashList(navController: NavController, viewModel: WashListViewModel) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
+        item {
+            Text(
+                text = "最近使用",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
+            )
+        }
         items(viewModel.data) { item ->
             // 获取 TimeData，传入它以便在 LaunchedEffect 中使用
             val messageData = viewModel.messageData.get<Int, TimeData>(item.goodsId)
@@ -172,7 +186,7 @@ fun ElectricityCard() {
     val data = viewModel.data
     if (data != null) {
         Card(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -188,7 +202,6 @@ fun ElectricityCard() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WashListScreen(navController: NavController) {
     val viewModel: WashListViewModel = hiltViewModel()
@@ -207,15 +220,7 @@ fun WashListScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                    Text("洗衣机列表")
-                }
-            )
+            SettingsTopBar("洗衣机")
         },
         floatingActionButton = {
             AnimatedVisibility(
@@ -247,7 +252,6 @@ fun WashListScreen(navController: NavController) {
                     Column(modifier = Modifier.fillMaxSize()) {
                         ElectricityCard()
                         WashList(navController, viewModel)
-//                    Spacer(modifier = Modifier.weight(1f)) // 占据剩余空间
                     }
                 }
             }

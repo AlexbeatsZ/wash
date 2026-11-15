@@ -1,3 +1,4 @@
+import java.util.Properties
 import org.gradle.kotlin.dsl.libs
 
 plugins {
@@ -16,23 +17,28 @@ android {
         applicationId = "com.srap.wash"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs {
-        create("release") {
-            keyAlias = "wuhua"
-            keyPassword = "james123"
-            storeFile = file("wuhua.jks")
-            storePassword = "james123"
+    val personalSigningFile = rootProject.file(".signing/personal.properties")
+    if (personalSigningFile.isFile) {
+        val personal = Properties().apply { personalSigningFile.inputStream().use { load(it) } }
+        signingConfigs {
+            create("personal") {
+                storeFile = rootProject.file(".signing/personal.jks")
+                storePassword = personal.getProperty("storePassword")
+                keyAlias = personal.getProperty("keyAlias")
+                keyPassword = personal.getProperty("keyPassword")
+            }
         }
     }
 
     buildTypes {
         release {
+            if (personalSigningFile.isFile) signingConfig = signingConfigs.getByName("personal")
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -66,7 +72,7 @@ android {
             )
         )
     }
-    dynamicFeatures += setOf(":elecbill")
+    if (rootProject.findProject(":elecbill") != null) dynamicFeatures += setOf(":elecbill")
 }
 
 dependencies {

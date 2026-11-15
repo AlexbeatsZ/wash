@@ -6,7 +6,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ListAlt
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocalLaundryService
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -32,13 +32,13 @@ fun MainScreen(
             item(
                 selected = selectIndex == 0,
                 label = {
-                    Text("主页")
+                    Text("洗衣机")
                 },
                 onClick = {
                     selectIndex = 0
                 },
                 icon = {
-                    Icon(Icons.Filled.Home, contentDescription = "主页")
+                    Icon(Icons.Filled.LocalLaundryService, contentDescription = "洗衣机")
                 }
             )
 

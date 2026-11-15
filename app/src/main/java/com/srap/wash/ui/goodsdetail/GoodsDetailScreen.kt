@@ -21,12 +21,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
@@ -43,6 +40,7 @@ import com.google.gson.Gson
 import com.srap.wash.logic.model.GoodsDetailsResponse
 import com.srap.wash.logic.model.GoodsSkusResponse
 import com.srap.wash.logic.model.PayResult
+import com.srap.wash.ui.component.SettingsTopBar
 import com.srap.wash.utils.ToastUtil
 import kotlinx.coroutines.delay
 
@@ -127,7 +125,7 @@ fun DetailWidget(data: GoodsDetailsResponse.Data) {
     ) {
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -206,7 +204,6 @@ fun DetailWidget(data: GoodsDetailsResponse.Data) {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(navController: NavController, goodsId: Int) {
     val viewModel = hiltViewModel<GoodsDetailViewModel, GoodsDetailViewModel.ViewModelFactory> { factory ->
@@ -215,15 +212,7 @@ fun DetailScreen(navController: NavController, goodsId: Int) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                    Text("洗衣机详细")
-                }
-            )
+            SettingsTopBar("洗衣机详情")
         },
     ) { innerPadding ->
         Box(

@@ -96,6 +96,7 @@ class CountdownService : Service() {
 
     private fun sendTimeUpdateBroadcast(timeLeft: Long) {
         val intent = Intent("com.srap.wash.UPDATE_TIME").apply {
+            setPackage(packageName)
             putExtra("residualTime", timeLeft)
             putExtra("id", id)
         }

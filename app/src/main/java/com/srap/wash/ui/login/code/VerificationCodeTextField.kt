@@ -1,6 +1,5 @@
 package com.srap.wash.ui.login.code
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -14,6 +13,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
@@ -94,9 +93,7 @@ fun BaseVerificationCodeTextField(
         readOnly = false,
         decorationBox = {
             Row(
-                Modifier
-                    .fillMaxWidth()
-                    .background(Color.Transparent),
+                Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
@@ -129,9 +126,9 @@ fun VerificationCodeTextField(
             else -> CodeState.PENDING
         }
         val cardColor = when (codeState) {
-            CodeState.ENTERED -> Color(0xFF466Eff)
-            CodeState.INPUTTING -> Color.White
-            CodeState.PENDING -> Color(0xFFF5F5F5)
+            CodeState.ENTERED -> MaterialTheme.colorScheme.primaryContainer
+            CodeState.INPUTTING -> MaterialTheme.colorScheme.surfaceContainerHigh
+            CodeState.PENDING -> MaterialTheme.colorScheme.surfaceContainerLow
         }
         val elevation = when (codeState) {
             CodeState.ENTERED -> 3.dp
@@ -139,9 +136,9 @@ fun VerificationCodeTextField(
             CodeState.PENDING -> 0.dp
         }
         val textColor = when (codeState) {
-            CodeState.ENTERED -> Color.White
-            CodeState.INPUTTING -> Color.Gray
-            CodeState.PENDING -> Color.Gray
+            CodeState.ENTERED -> MaterialTheme.colorScheme.onPrimaryContainer
+            CodeState.INPUTTING -> MaterialTheme.colorScheme.primary
+            CodeState.PENDING -> MaterialTheme.colorScheme.onSurfaceVariant
         }
 
         val blinkInterval = 1000L

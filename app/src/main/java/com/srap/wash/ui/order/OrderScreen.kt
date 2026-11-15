@@ -8,12 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.srap.wash.logic.model.OrderListResponse
 import com.srap.wash.ui.component.RefreshLoadList
+import com.srap.wash.ui.component.SettingsTopBar
 
 /**
  * 获取订单状态说明
@@ -42,7 +40,7 @@ fun OrderCard(item: OrderListResponse.Item) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 2.dp),
     ) {
         Column(
             modifier = Modifier
@@ -73,22 +71,13 @@ fun OrderCard(item: OrderListResponse.Item) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderScreen(navController: NavController) {
     val viewModel: OrderViewModel = hiltViewModel()
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                    Text("订单列表")
-                }
-            )
+            SettingsTopBar("订单")
         }
     ) { innerPadding ->
         Box(

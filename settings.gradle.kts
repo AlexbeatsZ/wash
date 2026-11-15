@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "wash"
 include(":app")
-include(":elecbill")
+if (file("elecbill/build.gradle.kts").isFile) include(":elecbill")
