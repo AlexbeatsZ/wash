@@ -69,12 +69,7 @@ class WashListViewModel @Inject constructor(
                         }
                         is LoadingState.Success -> {
                             loading = false
-                            val goodsList = state.response
-                            if (!goodsList.isNullOrEmpty()) {
-                                data = goodsList
-                                return@collect
-                            }
-                            ToastUtil.show("[$TAG] 数据异常")
+                            data = state.response
                         }
                     }
                 }

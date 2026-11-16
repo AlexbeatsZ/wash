@@ -30,7 +30,7 @@ class NetworkRepo @Inject constructor(
 
     fun getLatestUsed(
         categoryCode: String
-    ) = flowList {
+    ) = flowList(allowNullData = true) {
         apiService.getLatestUsed(categoryCode, StorageUtil.Token).await()
     }
 
@@ -149,17 +149,14 @@ class NetworkRepo @Inject constructor(
         emit(result)
     }.flowOn(Dispatchers.IO)
 
-    private fun <T> flowList(block: suspend () -> BaseListResponse<T>) = flow {
+    private fun <T> flowList(
+        allowNullData: Boolean = false,
+        block: suspend () -> BaseListResponse<T>
+    ) = flow {
         val result = try {
             val response = block()
             Log.i(tag, "flowList: $response")
-            if (response.code != Code.SUCCESS) {
-                LoadingState.Error(response.msg)
-            } else if (response.data != null) {
-                LoadingState.Success(response.data)
-            } else {
-                LoadingState.Error("异常")
-            }
+            response.toLoadingState(allowNullData)
         } catch (e: Exception) {
             Log.e(tag, e.message, e)
             LoadingState.Error(e.message ?: "unknown error")

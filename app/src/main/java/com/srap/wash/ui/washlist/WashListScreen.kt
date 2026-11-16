@@ -171,6 +171,16 @@ fun WashList(navController: NavController, viewModel: WashListViewModel) {
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
             )
         }
+        if (viewModel.data.isEmpty()) {
+            item {
+                Text(
+                    text = "暂无最近使用记录，点击右下角扫码添加洗衣机",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                )
+            }
+        }
         items(viewModel.data) { item ->
             // 获取 TimeData，传入它以便在 LaunchedEffect 中使用
             val messageData = viewModel.messageData.get<Int, TimeData>(item.goodsId)
