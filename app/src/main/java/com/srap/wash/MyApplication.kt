@@ -1,6 +1,7 @@
 package com.srap.wash
 
 import android.app.Application
+import com.srap.wash.ui.washlist.WashCountdownNotifications
 import dagger.hilt.android.HiltAndroidApp
 
 lateinit var myApplication: MyApplication
@@ -12,5 +13,6 @@ class MyApplication : Application() {
         super.onCreate()
 
         myApplication = this
+        WashCountdownNotifications(this).clearLegacyNotification()
     }
 }

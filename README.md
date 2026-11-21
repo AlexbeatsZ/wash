@@ -1,6 +1,6 @@
 # 洗衣机
 
-基于 [Night-stars-1/wash](https://github.com/Night-stars-1/wash) 的个人 fork，提供胖乖生活第三方客户端功能。当前个人版本为 1.2（versionCode 3），应用包名为 `com.srap.wash`。
+基于 [Night-stars-1/wash](https://github.com/Night-stars-1/wash) 的个人 fork，提供胖乖生活第三方客户端功能。当前个人版本为 1.2.2（versionCode 5），应用包名为 `com.srap.wash`。
 
 使用用户提供的 Pixel 风格启动图标，包含自适应、圆形和单色图层。界面采用 Material3 大标题和低阴影卡片，跟随系统明暗主题，Android 12 及以上使用系统动态色彩。
 

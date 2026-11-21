@@ -88,8 +88,9 @@ class NetworkRepo @Inject constructor(
     fun getOrderList(
         page: Int,
         pageSize: Int = 40,
+        orderStatus: String = "",
     ) = flowData {
-        apiService.getOrderList(page, pageSize, "", StorageUtil.Token).await()
+        apiService.getOrderList(page, pageSize, orderStatus, StorageUtil.Token).await()
     }
 
     fun getOrderDetail(
